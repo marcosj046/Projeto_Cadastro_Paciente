@@ -69,8 +69,15 @@ def exportar_pacientes():
 
 
 #-----------------------------------------------
+#Configuração para a tela
 tela = tk.Tk() #estartando a janela
 tela.title("Cadastro de Pacientes") #Inserindo um título na janela
+tela.configure(background= '#4682B4')
+tela.geometry("688x588")
+tela.resizable(True, True)
+tela.maxsize(width=888, height=788)
+tela.minsize(width=488, height=388)
+#-------------------------------------------
 
 #Criando as Labels:
 label_nome = tk.Label(tela, text="Nome")
