@@ -1,6 +1,7 @@
 import sqlite3
 import tkinter as tk
 import pandas as pd
+from tkinter import *
 
 #----------------------------------------------
 #Para criação do banco de dados retira o comentário (#) da linha 9 à 23 somente a primeira vez que rodar o cód,
@@ -66,18 +67,28 @@ def exportar_pacientes():
 
     conexao.commit()
     conexao.close()
+#-----------------------------------------------
+tela = Tk() #estartando a janela
 
-
+class Application():
+    def __init__(self):
+        self.tela = tela
+        self.janela()
+        tela.mainloop()
 #-----------------------------------------------
 #Configuração para a tela
-tela = tk.Tk() #estartando a janela
-tela.title("Cadastro de Pacientes") #Inserindo um título na janela
-tela.configure(background= '#4682B4')
-tela.geometry("688x588")
-tela.resizable(True, True)
-tela.maxsize(width=888, height=788)
-tela.minsize(width=488, height=388)
+    def janela(self):
+        tela.title("Cadastro de Pacientes") #Inserindo um título na janela
+        tela.configure(background= '#4682B4')
+        tela.geometry("688x588")
+        tela.resizable(True, True)
+        tela.maxsize(width=888, height=788)
+        tela.minsize(width=488, height=388)
 #-------------------------------------------
+#Criando os frames
+    def frames_da_tela(self):
+        self.frame_1 = Frame(self.tela)
+
 
 #Criando as Labels:
 label_nome = tk.Label(tela, text="Nome")
@@ -131,4 +142,5 @@ botao_exportar = tk.Button(tela, text="Exportar Informações", command = export
 botao_exportar.grid(row=7, column=2, padx=10, pady=10, columnspan=2, ipadx=80)
 
 #Obs: ipadx=80 - Basicamente serve para alargar uma estrutura especifíca
-tela.mainloop()
+
+Application()
