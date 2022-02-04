@@ -26,7 +26,7 @@ from tkinter import *
 #conexao.commit()
 #conexao.close()
 #-----------------------------------------------
-#Criando as funções
+#Criando as funções que serão utilizadas nos botões
 
 def cadastrar_paciente():
     conexao = sqlite3.connect('Banco.db')
@@ -74,6 +74,7 @@ class Application():
     def __init__(self):
         self.tela = tela
         self.janela()
+        self.frames_da_tela()
         tela.mainloop()
 #-----------------------------------------------
 #Configuração para a tela
@@ -87,7 +88,13 @@ class Application():
 #-------------------------------------------
 #Criando os frames
     def frames_da_tela(self):
-        self.frame_1 = Frame(self.tela)
+        self.frame_1 = Frame(self.tela, bd=4, bg='#dfe3ee',highlightbackground='#759fe6',
+                             highlightthickness=3)
+        self.frame_1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.46)
+
+        self.frame_2 = Frame(self.tela, bd=4, bg='#dfe3ee', highlightbackground='#759fe6',
+                             highlightthickness=3)
+        self.frame_2.place(relx=0.02, rely=0.5, relwidth=0.96, relheight=0.46)
 
 
 #Criando as Labels:
