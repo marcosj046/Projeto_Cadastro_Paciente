@@ -1,5 +1,4 @@
 import sqlite3
-import tkinter as tk
 import pandas as pd
 from tkinter import *
 
@@ -75,6 +74,7 @@ class Application():
         self.tela = tela
         self.janela()
         self.frames_da_tela()
+        self.widgets_frame1()
         tela.mainloop()
 #-----------------------------------------------
 #Configuração para a tela
@@ -96,58 +96,72 @@ class Application():
                              highlightthickness=3)
         self.frame_2.place(relx=0.02, rely=0.5, relwidth=0.96, relheight=0.46)
 
+    def widgets_frame1(self):
+        # Criação do Botão Cadastrar
+        self.bt_Cadastrar = Button(self.frame_1, text="Cadastrar", command=cadastrar_paciente)
+        self.bt_Cadastrar.place(relx=0.15, rely=0.8, relwidth=0.1, relheight=0.15)
+        # Criação do Botão Buscar
+        self.bt_buscar = Button(self.frame_1, text="Buscar", command=cadastrar_paciente)
+        self.bt_buscar.place(relx=0.25, rely=0.8, relwidth=0.1, relheight=0.15)
+        # Criação do Botão Exportar
+        self.bt_exportar = Button(self.frame_1, text="Exportar Informações", command=exportar_pacientes)
+        self.bt_exportar.place(relx=0.4, rely=0.8, relwidth=0.2, relheight=0.15)
+        # Criação do Botão Alterar
+        self.bt_alterar = Button(self.frame_1, text="Alterar Informações", command=exportar_pacientes)
+        self.bt_alterar.place(relx=0.6, rely=0.8, relwidth=0.2, relheight=0.15)
+        # Criação do Botão Excluir
+        self.bt_excluir = Button(self.frame_1, text="Excluir Informações", command=exportar_pacientes)
+        self.bt_excluir.place(relx=0.8, rely=0.8, relwidth=0.2, relheight=0.15)
+
+        #Criando os Labels e entrada do codigo
+        # Criando a Label de código
+        label_codigo = Label(self.frame_1, text="Código")
+        label_codigo.place(relx=0, rely=0.05)
+        #Criando a Label de nome
+        label_nome = Label(self.frame_1, text="Nome")
+        label_nome.place(relx=0.2, rely=0.05)
+        # Criando a Label de Telefone
+        #label_telefone = Label(tela, text="Telefone")
+        #label_telefone.grid(row=2, column=0, padx=10, pady=10)
+
+
 
 #Criando as Labels:
-label_nome = tk.Label(tela, text="Nome")
-label_nome.grid(row=0, column=0, padx=10, pady=10)
 
-label_sobrenome = tk.Label(tela, text="Sobrenome")
-label_sobrenome.grid(row=1, column=0, padx=10, pady=10)
 
-label_sexo = tk.Label(tela, text="Sexo")
-label_sexo.grid(row=2, column=0, padx=10, pady=10)
 
-label_telefone = tk.Label(tela, text="Telefone")
-label_telefone.grid(row=3, column=0, padx=10, pady=10)
 
-label_origem = tk.Label(tela, text="Origem")
+
+
+label_origem = Label(tela, text="Origem")
 label_origem.grid(row=4, column=0, padx=10, pady=10)
 
-label_cidade = tk.Label(tela, text="Cidade")
+label_cidade = Label(tela, text="Cidade")
 label_cidade.grid(row=5, column=0, padx=10, pady=10)
 
-label_estado = tk.Label(tela, text="Estado")
+label_estado = Label(tela, text="Estado")
 label_estado.grid(row=6, column=0, padx=10, pady=10)
 #-------------------------------------------------------
 #Entrys
-entry_nome = tk.Entry(tela, text="Nome", width=30)
+entry_nome = Entry(tela, text="Nome", width=30)
 entry_nome.grid(row=0, column=2, padx=10, pady=10)
 
-entry_sobrenome = tk.Entry(tela, text="Sobrenome", width=30)
+entry_sobrenome = Entry(tela, text="Sobrenome", width=30)
 entry_sobrenome.grid(row=1, column=2, padx=10, pady=10)
 
-entry_sexo = tk.Entry(tela, text="Sexo", width=30)
+entry_sexo = Entry(tela, text="Sexo", width=30)
 entry_sexo.grid(row=2, column=2, padx=10, pady=10)
 
-entry_telefone = tk.Entry(tela, text="Telefone", width=30)
+entry_telefone = Entry(tela, text="Telefone", width=30)
 entry_telefone.grid(row=3, column=2, padx=10, pady=10)
 
-entry_origem = tk.Entry(tela, text="Origem", width=30)
+entry_origem = Entry(tela, text="Origem", width=30)
 entry_origem.grid(row=4, column=2, padx=10, pady=10)
 
-entry_cidade = tk.Entry(tela, text="Cidade", width=30)
+entry_cidade = Entry(tela, text="Cidade", width=30)
 entry_cidade.grid(row=5, column=2, padx=10, pady=10)
 
-entry_estado = tk.Entry(tela, text="Estado", width=30)
+entry_estado = Entry(tela, text="Estado", width=30)
 entry_estado.grid(row=6, column=2, padx=10, pady=10)
 
-#Botões
-botao_Cadastrar = tk.Button(tela, text="Cadastrar Paciente", command = cadastrar_paciente)
-botao_Cadastrar.grid(row=7, column=0, padx=10, pady=10, columnspan=2, ipadx=80)
-
-botao_exportar = tk.Button(tela, text="Exportar Informações", command = exportar_pacientes)
-botao_exportar.grid(row=7, column=2, padx=10, pady=10, columnspan=2, ipadx=80)
-
-#Obs: ipadx=80 - Basicamente serve para alargar uma estrutura especifíca
-
-Application()
+Application() #chamando a classe Application
