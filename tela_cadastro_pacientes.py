@@ -13,60 +13,17 @@ from tkinter import *
 
 #c.execute(''' CREATE TABLE pacientes (
 #        Nome text,
-#        Sobrenome text,
 #        Sexo text,
+#        D_nascimento text,
 #        Telefone text,
-#        Origem text,
-#        Cidade text,
-#        Estado text
+#        Mae text
 #        )
 #       ''')
 
 #conexao.commit()
 #conexao.close()
 #-----------------------------------------------
-#Criando as funções que serão utilizadas nos botões
 
-def cadastrar_paciente():
-    conexao = sqlite3.connect('Banco.db')
-    c = conexao.cursor()
-    c.execute("INSERT INTO pacientes VALUES (:nome,:sobrenome,:sexo,:telefone, :origem, :cidade, :estado)",
-         {
-        'nome': entry_nome.get(),
-        'sobrenome': entry_sobrenome.get(),
-        'sexo': entry_sexo.get(),
-        'telefone': entry_telefone.get(),
-        'origem': entry_origem.get(),
-        'cidade': entry_cidade.get(),
-        'estado': entry_estado.get()
-            }
-              )
-
-    conexao.commit()
-    conexao.close()
-
-    #criando uma função para limpar a tela após inserir registros
-    entry_nome.delete(0, "end")
-    entry_sobrenome.delete(0, "end")
-    entry_sexo.delete(0, "end")
-    entry_telefone.delete(0, "end")
-    entry_origem.delete(0, "end")
-    entry_cidade.delete(0, "end")
-    entry_estado.delete(0, "end")
-
-#Criando a função para exportar as informações do banco em formato xlxs
-def exportar_pacientes():
-    conexao = sqlite3.connect('Banco.db')
-    c = conexao.cursor()
-
-    c.execute("SELECT *, oid FROM pacientes") #Criando um select da tabela clientes
-    clientes_cadastrados = c.fetchall() #Onde eu utilizo a estrutura fetchall para retornar todos os dados da mesma
-    clientes_cadastrados = pd.DataFrame(clientes_cadastrados, columns=['Nome','Sobrenome','Sexo','Telefone', 'Origem', 'Cidade', 'Estado','Id_banco']) #em seguida transformo a variável em um Dataframe
-    clientes_cadastrados.to_excel('banco_pacientes.xlsx') #Para que assim eu possa exportar como Excel
-
-    conexao.commit()
-    conexao.close()
-#-----------------------------------------------
 tela = Tk() #estartando a janela
 
 class Application():
@@ -97,6 +54,42 @@ class Application():
         self.frame_2.place(relx=0.02, rely=0.5, relwidth=0.96, relheight=0.46)
 
     def widgets_frame1(self):
+        # Criando as funções que serão utilizadas nos botões:
+        def cadastrar_paciente():
+            conexao = sqlite3.connect('Banco.db')
+            c = conexao.cursor()
+            c.execute("INSERT INTO pacientes VALUES (:nome,:sexo,:d_nascimento, :telefone, :mae)",
+                      {
+                          'nome': entry_nome.get(),
+                          'sexo': entry_sexo.get(),
+                          'd_nascimento': entry_d_nascimento.get(),
+                          'telefone': entry_telefone.get(),
+                          'mae': entry_mae.get()
+                      }
+                      )
+            conexao.commit()
+            conexao.close()
+            # criando uma função para limpar a tela após inserir registros
+            entry_nome.delete(0, "end")
+            entry_sexo.delete(0, "end")
+            entry_d_nascimento.delete(0, "end")
+            entry_telefone.delete(0, "end")
+            entry_mae.delete(0, "end")
+        #------------------------------------------------------------------------------
+        # Criando a função para o botão exportar, onde as informações do banco será exportada em formato xlxs
+        def exportar_pacientes():
+            conexao = sqlite3.connect('Banco.db')
+            c = conexao.cursor()
+            c.execute("SELECT *, oid FROM pacientes")  # Criando um select da tabela clientes
+            clientes_cadastrados = c.fetchall()  # Onde eu utilizo a estrutura fetchall para retornar todos os dados da mesma
+            clientes_cadastrados = pd.DataFrame(clientes_cadastrados,
+                                                columns=['Nome', 'Sexo', 'D_Nascimento', 'Telefone', 'Mae',
+                                                         'Id_banco'])  # em seguida transformo a variável em um Dataframe
+            clientes_cadastrados.to_excel('banco_pacientes.xlsx')  # Para que assim eu possa exportar como Excel
+            conexao.commit()
+            conexao.close()
+        #-----------------------------------------------------------------------------------------
+        #Criando os botões:
         # Criação do Botão Cadastrar
         self.bt_Cadastrar = Button(self.frame_1, text="Cadastrar", command=cadastrar_paciente)
         self.bt_Cadastrar.place(relx=0.15, rely=0.8, relwidth=0.1, relheight=0.15)
@@ -112,56 +105,48 @@ class Application():
         # Criação do Botão Excluir
         self.bt_excluir = Button(self.frame_1, text="Excluir Informações", command=exportar_pacientes)
         self.bt_excluir.place(relx=0.8, rely=0.8, relwidth=0.2, relheight=0.15)
-
-        #Criando os Labels e entrada do codigo
+        #---------------------------------------------------------------------------------
+        #Criando os Labels e entrada do codigo (Entrys)
+        
         # Criando a Label de código
         label_codigo = Label(self.frame_1, text="Código")
         label_codigo.place(relx=0, rely=0.05)
         #Criando a Label de nome
         label_nome = Label(self.frame_1, text="Nome")
         label_nome.place(relx=0.2, rely=0.05)
+        # Criando a Label de sexo
+        label_sexo = Label(self.frame_1, text="Sexo")
+        label_sexo.place(relx=0, rely=0.2)
+        # Criando a Label de data de nascimento
+        label_dtn = Label(self.frame_1, text="Data de Nascimento")
+        label_dtn.place(relx=0.2, rely=0.2)
         # Criando a Label de Telefone
-        #label_telefone = Label(tela, text="Telefone")
-        #label_telefone.grid(row=2, column=0, padx=10, pady=10)
+        label_telefone = Label(self.frame_1, text="Telefone")
+        label_telefone.place(relx=0.5, rely=0.2)
+        # Criando a Label de nome da mãe
+        label_nome_mae = Label(self.frame_1, text="Mãe")
+        label_nome_mae.place(relx=0, rely=0.35)
+
+        #Entrys
+        #Entrys de Código
+        entry_codigo = Entry(self.frame_1, text="Cód", width=10)
+        entry_codigo.place(relx=0.08, rely=0.05)
+        # Entrys de Nome
+        entry_nome = Entry(self.frame_1, text="Nome", width=70)
+        entry_nome.place(relx=0.28,rely= 0.05)
+        # Entrys de Sexo
+        entry_sexo = Entry(self.frame_1, text="Sexo", width=12)
+        entry_sexo.place(relx=0.06, rely=0.2)
+        # Entrys de Data de Nascimento
+        entry_d_nascimento = Entry(self.frame_1, text="D_Nascimento", width=10)
+        entry_d_nascimento.place(relx=0.39, rely=0.2)
+        # Entrys de Telefone
+        entry_telefone = Entry(self.frame_1, text="Telefone", width=25)
+        entry_telefone.place(relx=0.59, rely=0.2)
+        # Entrys do Nome da Mãe
+        entry_mae = Entry(self.frame_1, text="Mae", width=70)
+        entry_mae.place(relx=0.06, rely=0.35)
 
 
-
-#Criando as Labels:
-
-
-
-
-
-
-label_origem = Label(tela, text="Origem")
-label_origem.grid(row=4, column=0, padx=10, pady=10)
-
-label_cidade = Label(tela, text="Cidade")
-label_cidade.grid(row=5, column=0, padx=10, pady=10)
-
-label_estado = Label(tela, text="Estado")
-label_estado.grid(row=6, column=0, padx=10, pady=10)
-#-------------------------------------------------------
-#Entrys
-entry_nome = Entry(tela, text="Nome", width=30)
-entry_nome.grid(row=0, column=2, padx=10, pady=10)
-
-entry_sobrenome = Entry(tela, text="Sobrenome", width=30)
-entry_sobrenome.grid(row=1, column=2, padx=10, pady=10)
-
-entry_sexo = Entry(tela, text="Sexo", width=30)
-entry_sexo.grid(row=2, column=2, padx=10, pady=10)
-
-entry_telefone = Entry(tela, text="Telefone", width=30)
-entry_telefone.grid(row=3, column=2, padx=10, pady=10)
-
-entry_origem = Entry(tela, text="Origem", width=30)
-entry_origem.grid(row=4, column=2, padx=10, pady=10)
-
-entry_cidade = Entry(tela, text="Cidade", width=30)
-entry_cidade.grid(row=5, column=2, padx=10, pady=10)
-
-entry_estado = Entry(tela, text="Estado", width=30)
-entry_estado.grid(row=6, column=2, padx=10, pady=10)
-
+#Rodar a aplicação
 Application() #chamando a classe Application
