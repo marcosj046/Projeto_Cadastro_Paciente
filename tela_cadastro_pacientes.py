@@ -91,7 +91,8 @@ class Application():
         #-----------------------------------------------------------------------------------------
         #Criando os botões:
         # Criação do Botão Cadastrar
-        self.bt_Cadastrar = Button(self.frame_1, text="Cadastrar", command=cadastrar_paciente)
+        self.bt_Cadastrar = Button(self.frame_1, text="Cadastrar", bd=3, bg='#107db2', fg='white',
+                                   font=('verdana', 8), command=cadastrar_paciente)
         self.bt_Cadastrar.place(relx=0.15, rely=0.8, relwidth=0.1, relheight=0.15)
         # Criação do Botão Buscar
         self.bt_buscar = Button(self.frame_1, text="Buscar", command=cadastrar_paciente)
@@ -107,7 +108,7 @@ class Application():
         self.bt_excluir.place(relx=0.8, rely=0.8, relwidth=0.2, relheight=0.15)
         #---------------------------------------------------------------------------------
         #Criando os Labels e entrada do codigo (Entrys)
-        
+
         # Criando a Label de código
         label_codigo = Label(self.frame_1, text="Código")
         label_codigo.place(relx=0, rely=0.05)
