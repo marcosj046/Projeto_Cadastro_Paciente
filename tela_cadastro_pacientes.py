@@ -95,37 +95,41 @@ class Application():
                                    font=('verdana', 8), command=cadastrar_paciente)
         self.bt_Cadastrar.place(relx=0.15, rely=0.8, relwidth=0.1, relheight=0.15)
         # Criação do Botão Buscar
-        self.bt_buscar = Button(self.frame_1, text="Buscar", command=cadastrar_paciente)
+        self.bt_buscar = Button(self.frame_1, text="Buscar", bd=3, bg='#107db2', fg='white',
+                                   font=('verdana', 8), command=cadastrar_paciente)
         self.bt_buscar.place(relx=0.25, rely=0.8, relwidth=0.1, relheight=0.15)
         # Criação do Botão Exportar
-        self.bt_exportar = Button(self.frame_1, text="Exportar Informações", command=exportar_pacientes)
+        self.bt_exportar = Button(self.frame_1, text="Exportar Informações", bd=3, bg='#107db2', fg='white',
+                                   font=('verdana', 8), command=exportar_pacientes)
         self.bt_exportar.place(relx=0.4, rely=0.8, relwidth=0.2, relheight=0.15)
         # Criação do Botão Alterar
-        self.bt_alterar = Button(self.frame_1, text="Alterar Informações", command=exportar_pacientes)
+        self.bt_alterar = Button(self.frame_1, text="Alterar Informações", bd=3, bg='#107db2', fg='white',
+                                   font=('verdana', 8), command=exportar_pacientes)
         self.bt_alterar.place(relx=0.6, rely=0.8, relwidth=0.2, relheight=0.15)
         # Criação do Botão Excluir
-        self.bt_excluir = Button(self.frame_1, text="Excluir Informações", command=exportar_pacientes)
+        self.bt_excluir = Button(self.frame_1, text="Excluir Informações", bd=3, bg='#107db2', fg='white',
+                                   font=('verdana', 8), command=exportar_pacientes)
         self.bt_excluir.place(relx=0.8, rely=0.8, relwidth=0.2, relheight=0.15)
         #---------------------------------------------------------------------------------
         #Criando os Labels e entrada do codigo (Entrys)
 
         # Criando a Label de código
-        label_codigo = Label(self.frame_1, text="Código")
+        label_codigo = Label(self.frame_1, text="Código", bg='#dfe3ee', fg='#107db2')
         label_codigo.place(relx=0, rely=0.05)
         #Criando a Label de nome
-        label_nome = Label(self.frame_1, text="Nome")
+        label_nome = Label(self.frame_1, text="Nome", bg='#dfe3ee', fg='#107db2')
         label_nome.place(relx=0.2, rely=0.05)
         # Criando a Label de sexo
-        label_sexo = Label(self.frame_1, text="Sexo")
+        label_sexo = Label(self.frame_1, text="Sexo", bg='#dfe3ee', fg='#107db2')
         label_sexo.place(relx=0, rely=0.2)
         # Criando a Label de data de nascimento
-        label_dtn = Label(self.frame_1, text="Data de Nascimento")
+        label_dtn = Label(self.frame_1, text="Data de Nascimento", bg='#dfe3ee', fg='#107db2')
         label_dtn.place(relx=0.2, rely=0.2)
         # Criando a Label de Telefone
-        label_telefone = Label(self.frame_1, text="Telefone")
+        label_telefone = Label(self.frame_1, text="Telefone", bg='#dfe3ee', fg='#107db2')
         label_telefone.place(relx=0.5, rely=0.2)
         # Criando a Label de nome da mãe
-        label_nome_mae = Label(self.frame_1, text="Mãe")
+        label_nome_mae = Label(self.frame_1, text="Mãe", bg='#dfe3ee', fg='#107db2')
         label_nome_mae.place(relx=0, rely=0.35)
 
         #Entrys
