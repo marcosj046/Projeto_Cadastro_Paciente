@@ -3,32 +3,30 @@ import pandas as pd
 from tkinter import *
 from tkinter import ttk
 
-#----------------------------------------------
-#Para criação do banco de dados retira o comentário (#) da linha 11 à 25 somente a primeira vez que rodar o cód,
-#depois, basta comentar novamente.
-
-#Criando o Banco de Dados
-#conexao = sqlite3.connect('Banco.db')
-
-#c = conexao.cursor()
-
-#c.execute(''' CREATE TABLE pacientes (
-#        Nome text,
-#        Sexo text,
-#        D_nascimento text,
-#        Telefone text,
-#        Mae text
-#        )
-#       ''')
-
-#conexao.commit()
-#conexao.close()
-#-----------------------------------------------
-
 tela = Tk() #estartando a janela
 
 class Funcs():
     # criando uma função para limpar a tela após inserir registros
+    def conecta_bd(self):
+        self.conexao = sqlite3.connect('Banco.db')
+        self.c = self.conexao.cursor()
+    def desconecta_db(self):
+        self.conexao.close()
+    def cria_tabela(self):
+        self.conecta_bd(); print("Conectando ao Banco de Dados")
+        # Criando a tabela do Bando de dados
+        self.c.execute(''' 
+        CREATE TABLE IF NOT EXISTS pacientes (
+                COD INTEGER PRIMARY KEY,
+                Nome TEXT NOT NULL,
+                Sexo TEXT,
+                D_nascimento TEXT,
+                Telefone INTEGER(20),
+                Mae TEXT NOT NULL
+                );
+               ''')
+        self.conexao.commit(); print("Banco de dados Criado")
+        self.desconecta_db()
     def limpa_tela(self):
         self.entry_codigo.delete(0, END)
         self.entry_nome.delete(0, END)
@@ -39,19 +37,28 @@ class Funcs():
 
     # criando uma função para inserir registros
     def cadastrar_paciente(self):
-        conexao = sqlite3.connect('Banco.db')
-        c = conexao.cursor()
-        c.execute("INSERT INTO pacientes VALUES (:nome,:sexo,:d_nascimento, :telefone, :mae)",
-                  {
-                      'nome': self.entry_nome.get(),
-                      'sexo': self.entry_sexo.get(),
-                      'd_nascimento': self.entry_d_nascimento.get(),
-                      'telefone': self.entry_telefone.get(),
-                      'mae': self.entry_mae.get()
-                  }
-                  )
-        conexao.commit()
-        conexao.close()
+        self.codigo = self.entry_codigo.get()
+        self.nome = self.entry_nome.get()
+        self.sexo = self.entry_sexo.get()
+        self.nascimento = self.entry_d_nascimento.get()
+        self.telefone = self.entry_telefone.get()
+        self.mae = self.entry_mae.get()
+        self.conecta_bd()
+
+        self.c.execute("""INSERT INTO pacientes (Nome, Sexo, D_Nascimento, Telefone, Mae)
+                    VALUES(?, ?, ?, ?, ?)""", (self.nome, self.nome, self.nascimento, self.telefone, self.mae))
+        self.conexao.commit()
+        self.desconecta_db()
+        self.select_lista()
+        self.limpa_tela()
+    def select_lista(self):
+        self.lista_pac.delete(*self.lista_pac.get_children())
+        self.conecta_bd()
+        lista = self.c.execute('''SELECT COD, Nome, Sexo, D_Nascimento, Telefone, Mae FROM pacientes
+                                ORDER BY Nome ASC''')
+        for i in lista:
+            self.lista_pac.insert("", END, values=i)
+        self.desconecta_db()
 
     # criando uma função para exportar os registros em formato xlsx(Excel)
     def exportar_pacientes(self):
@@ -60,7 +67,7 @@ class Funcs():
         c.execute("SELECT *, oid FROM pacientes")  # Criando um select da tabela clientes
         clientes_cadastrados = c.fetchall()  # Onde eu utilizo a estrutura fetchall para retornar todos os dados da mesma
         clientes_cadastrados = pd.DataFrame(clientes_cadastrados,
-                                            columns=['Nome', 'Sexo', 'D_Nascimento', 'Telefone', 'Mae',
+                                            columns=['COD','Nome', 'Sexo', 'D_Nascimento', 'Telefone', 'Mae',
                                                      'Id_banco'])  # em seguida transformo a variável em um Dataframe
         clientes_cadastrados.to_excel('banco_pacientes.xlsx')  # Para que assim eu possa exportar como Excel
         conexao.commit()
@@ -74,6 +81,8 @@ class Application(Funcs):
         self.frames_da_tela()
         self.widgets_frame1()
         self.lista_frame2()
+        self.cria_tabela()
+        self.select_lista()
         tela.mainloop()
 #-----------------------------------------------
 #Configuração para a tela
