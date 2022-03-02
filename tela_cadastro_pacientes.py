@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import ttk
 
 #----------------------------------------------
-#Para criação do banco de dados retira o comentário (#) da linha 9 à 23 somente a primeira vez que rodar o cód,
+#Para criação do banco de dados retira o comentário (#) da linha 11 à 25 somente a primeira vez que rodar o cód,
 #depois, basta comentar novamente.
 
 #Criando o Banco de Dados
