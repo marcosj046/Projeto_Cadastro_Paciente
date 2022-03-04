@@ -6,12 +6,14 @@ from tkinter import ttk
 tela = Tk() #estartando a janela
 
 class Funcs():
-    # criando uma função para limpar a tela após inserir registros
+    #Criando uma função para conectar ao banco
     def conecta_bd(self):
         self.conexao = sqlite3.connect('Banco.db')
         self.c = self.conexao.cursor()
+    # Criando uma função para desconectar ao banco
     def desconecta_db(self):
         self.conexao.close()
+    # Criando uma função para criar a tabela no banco
     def cria_tabela(self):
         self.conecta_bd(); print("Conectando ao Banco de Dados")
         # Criando a tabela do Bando de dados
@@ -27,6 +29,7 @@ class Funcs():
                ''')
         self.conexao.commit(); print("Banco de dados Criado")
         self.desconecta_db()
+    # criando uma função para limpar a tela após inserir registros
     def limpa_tela(self):
         self.entry_codigo.delete(0, END)
         self.entry_nome.delete(0, END)
@@ -34,23 +37,26 @@ class Funcs():
         self.entry_d_nascimento.delete(0, END)
         self.entry_telefone.delete(0, END)
         self.entry_mae.delete(0, END)
-
-    # criando uma função para inserir registros
-    def cadastrar_paciente(self):
+    #Criando uma função para criação de variáveis que serão utilziadas em outras funções
+    def variaveis(self):
         self.codigo = self.entry_codigo.get()
         self.nome = self.entry_nome.get()
         self.sexo = self.entry_sexo.get()
         self.nascimento = self.entry_d_nascimento.get()
         self.telefone = self.entry_telefone.get()
         self.mae = self.entry_mae.get()
+    # criando uma função para inserir registros
+    def cadastrar_paciente(self):
+        self.variaveis()
         self.conecta_bd()
 
         self.c.execute("""INSERT INTO pacientes (Nome, Sexo, D_Nascimento, Telefone, Mae)
-                    VALUES(?, ?, ?, ?, ?)""", (self.nome, self.nome, self.nascimento, self.telefone, self.mae))
+                    VALUES(?, ?, ?, ?, ?)""", (self.nome, self.sexo, self.nascimento, self.telefone, self.mae))
         self.conexao.commit()
         self.desconecta_db()
         self.select_lista()
         self.limpa_tela()
+    #Criando uma função para selecionar as informações preenchidas
     def select_lista(self):
         self.lista_pac.delete(*self.lista_pac.get_children())
         self.conecta_bd()
@@ -59,7 +65,28 @@ class Funcs():
         for i in lista:
             self.lista_pac.insert("", END, values=i)
         self.desconecta_db()
+    #Criando uma função para capturar as informações com um evento de duplo clique do mouse
+    def doubleclick(self, event):
+        self.limpa_tela()
+        self.lista_pac.selection()
 
+        for n in self.lista_pac.selection():
+            col1, col2, col3, col4, col5, col6 = self.lista_pac.item(n, "values")
+            self.entry_codigo.insert(END, col1)
+            self.entry_nome.insert(END, col2)
+            self.entry_sexo.insert(END, col3)
+            self.entry_d_nascimento.insert(END, col4)
+            self.entry_telefone.insert(END, col5)
+            self.entry_mae.insert(END, col6)
+    # criando uma função para excluir registros
+    def delete(self):
+        self.variaveis()
+        self.conecta_bd()
+        self.c.execute("""DELETE FROM pacientes WHERE COD = ?""", (self.codigo))
+        self.conexao.commit()
+        self.desconecta_db()
+        self.limpa_tela()
+        self.select_lista()
     # criando uma função para exportar os registros em formato xlsx(Excel)
     def exportar_pacientes(self):
         conexao = sqlite3.connect('Banco.db')
@@ -134,7 +161,7 @@ class Application(Funcs):
         self.bt_alterar.place(relx=0.6, rely=0.8, relwidth=0.2, relheight=0.15)
         # Criação do Botão Excluir
         self.bt_excluir = Button(self.frame_1, text="Excluir Informações", bd=3, bg='#107db2', fg='white',
-                                   font=('verdana', 8), command=self.exportar_pacientes)
+                                   font=('verdana', 8), command=self.delete)
         self.bt_excluir.place(relx=0.8, rely=0.8, relwidth=0.2, relheight=0.15)
         #---------------------------------------------------------------------------------
         #Criando os Labels e entrada do codigo (Entrys)
@@ -206,6 +233,7 @@ class Application(Funcs):
         self.lista_pac.configure(yscroll=self.scroolLista.set)#Obs: se atentar para a forma de escrita, o correto é:
                                                               # yscroll e não yscrooll.
         self.scroolLista.place(relx=0.96, rely=0.1, relwidth=0.03, relheight=0.85)
+        self.lista_pac.bind("<Double-1>", self.doubleclick) #Chamando o evento de duplo clique
 
 
 
