@@ -3,7 +3,10 @@ import pandas as pd
 from tkinter import *
 from tkinter import ttk
 
+from importacao_pdf import relatorio
+
 tela = Tk() #estartando a janela
+
 
 class Funcs():
     #Criando uma função para conectar ao banco
@@ -15,7 +18,8 @@ class Funcs():
         self.conexao.close()
     # Criando uma função para criar a tabela no banco
     def cria_tabela(self):
-        self.conecta_bd(); print("Conectando ao Banco de Dados")
+        self.conecta_bd();
+        print("Conectando ao Banco de Dados")
         # Criando a tabela do Bando de dados
         self.c.execute(''' 
         CREATE TABLE IF NOT EXISTS pacientes (
@@ -27,7 +31,8 @@ class Funcs():
                 Mae TEXT NOT NULL
                 );
                ''')
-        self.conexao.commit(); print("Banco de dados Criado")
+        self.conexao.commit();
+        print("Banco de dados Criado")
         self.desconecta_db()
     # criando uma função para limpar a tela após inserir registros
     def limpa_tela(self):
@@ -49,7 +54,6 @@ class Funcs():
     def cadastrar_paciente(self):
         self.variaveis()
         self.conecta_bd()
-
         self.c.execute("""INSERT INTO pacientes (Nome, Sexo, D_Nascimento, Telefone, Mae)
                     VALUES(?, ?, ?, ?, ?)""", (self.nome, self.sexo, self.nascimento, self.telefone, self.mae))
         self.conexao.commit()
@@ -69,7 +73,6 @@ class Funcs():
     def doubleclick(self, event):
         self.limpa_tela()
         self.lista_pac.selection()
-
         for n in self.lista_pac.selection():
             col1, col2, col3, col4, col5, col6 = self.lista_pac.item(n, "values")
             self.entry_codigo.insert(END, col1)
@@ -78,6 +81,23 @@ class Funcs():
             self.entry_d_nascimento.insert(END, col4)
             self.entry_telefone.insert(END, col5)
             self.entry_mae.insert(END, col6)
+
+    # Criando a função para buscar registros
+    def buscapac(self):
+        self.conecta_bd()
+        self.lista_pac.delete(*self.lista_pac.get_children())
+
+        self.entry_nome.insert(END, '%')
+        nome = self.entry_nome.get()
+        # criando um select para retornar as informações que eu quero do banco
+        self.c.execute(
+            """ SELECT COD, Nome, Sexo, D_Nascimento, Telefone, Mae FROM pacientes
+             WHERE Nome LIKE '%s' ORDER BY Nome ASC""" % nome)
+        buscanomepac = self.c.fetchall() #criando uma variável para receber todos os valores do banco
+        for i in buscanomepac: #criando um for para percorrer esses valores e mostrar na tela
+            self.lista_pac.insert("", END, values=i)
+        self.limpa_tela()
+        self.desconecta_db()
     # criando uma função para excluir registros
     def delete(self):
         self.variaveis()
@@ -87,6 +107,16 @@ class Funcs():
         self.desconecta_db()
         self.limpa_tela()
         self.select_lista()
+    #Criando a função para alterar as informações dos registros (UPDATE)
+    def altera(self):
+        self.variaveis()
+        self.conecta_bd()
+        self.c.execute("""UPDATE pacientes SET Nome = ?, Sexo = ?, D_Nascimento = ?, Telefone = ?, Mae = ?
+                        WHERE COD = ?""", (self.nome, self.sexo, self.nascimento,self.telefone, self.mae, self.codigo))
+        self.conexao.commit()
+        self.desconecta_db()
+        self.select_lista()
+        self.limpa_tela()
     # criando uma função para exportar os registros em formato xlsx(Excel)
     def exportar_pacientes(self):
         conexao = sqlite3.connect('Banco.db')
@@ -100,8 +130,26 @@ class Funcs():
         conexao.commit()
         conexao.close()
 
+    # Criando uma função de barra de menu
+    def menu(self):
+        menubar = Menu(self.tela)
+        self.tela.config(menu=menubar)
+        filemenu = Menu(menubar)
+        filemenu2 = Menu(menubar)
 
-class Application(Funcs):
+        def Quit(): self.tela.destroy()
+
+        menubar.add_cascade(label="Opções", menu=filemenu)
+        menubar.add_cascade(label="Paciente", menu=filemenu2)
+
+        filemenu.add_command(label="Sair", command=Quit)
+        filemenu.add_command(label="Limpa Tela", command=self.limpa_tela)
+
+        filemenu2.add_command(label="Exportar Cadastro para PDF", command=self.gerarelatorio)
+        filemenu2.add_command(label="Exportar Cadastros para xlsx", command=self.exportar_pacientes)
+
+
+class Application(Funcs, relatorio):
     def __init__(self):
         self.tela = tela
         self.janela()
@@ -110,6 +158,8 @@ class Application(Funcs):
         self.lista_frame2()
         self.cria_tabela()
         self.select_lista()
+        self.menu()
+        self.gerarelatorio()
         tela.mainloop()
 #-----------------------------------------------
 #Configuração para a tela
@@ -149,15 +199,11 @@ class Application(Funcs):
         self.bt_Cadastrar.place(relx=0.15, rely=0.8, relwidth=0.1, relheight=0.15)
         # Criação do Botão Buscar
         self.bt_buscar = Button(self.frame_1, text="Buscar", bd=3, bg='#107db2', fg='white',
-                                   font=('verdana', 8), command=self.cadastrar_paciente)
+                                   font=('verdana', 8), command=self.buscapac)
         self.bt_buscar.place(relx=0.25, rely=0.8, relwidth=0.1, relheight=0.15)
-        # Criação do Botão Exportar
-        self.bt_exportar = Button(self.frame_1, text="Exportar Informações", bd=3, bg='#107db2', fg='white',
-                                   font=('verdana', 8), command=self.exportar_pacientes)
-        self.bt_exportar.place(relx=0.4, rely=0.8, relwidth=0.2, relheight=0.15)
-        # Criação do Botão Alterar
+        #Criação do Botão Alterar
         self.bt_alterar = Button(self.frame_1, text="Alterar Informações", bd=3, bg='#107db2', fg='white',
-                                   font=('verdana', 8), command=self.exportar_pacientes)
+                                   font=('verdana', 8), command=self.altera)
         self.bt_alterar.place(relx=0.6, rely=0.8, relwidth=0.2, relheight=0.15)
         # Criação do Botão Excluir
         self.bt_excluir = Button(self.frame_1, text="Excluir Informações", bd=3, bg='#107db2', fg='white',
