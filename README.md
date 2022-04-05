@@ -3,4 +3,4 @@
 
 Neste projeto estou utilizando a biblioteca TKinter para a janela e outros widgets + Pandas para a exportação das informações do banco de dados para o formato xls e o Banco de Dados SQLite.
 
-EM ANDAMENTO...
+
